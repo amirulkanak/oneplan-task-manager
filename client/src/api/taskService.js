@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // backend Api URL
-const API_URL = import.meta.env.VITE_BACKEND_API_URL;
+// const API_URL = import.meta.env.VITE_BACKEND_API_URL;
+const API_URL = 'http://localhost:5000/tasks';
 
 export const fetchTasks = async () => {
   const response = await axios.get(API_URL);

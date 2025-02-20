@@ -44,4 +44,13 @@ app.delete('/tasks/:id', async (req, res) => {
   res.json({ message: 'Task deleted' });
 });
 
-app.listen(5000, () => console.log('Server running on port 5000'));
+// Default route
+app.get('/', (req, res) => {
+  res.send('Welcome to the API - developed by github/amirulkanak');
+});
+
+//  Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is online, address: http://localhost:${PORT}`);
+});
