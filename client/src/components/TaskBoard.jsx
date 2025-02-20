@@ -1,40 +1,46 @@
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchTasks, updateTask } from '../api/taskService';
 import TaskCard from './TaskCard';
-
-const initialTasks = {
-  'To-Do': [{ id: '1', title: 'Task 1', description: 'Description 1' }],
-  'In Progress': [{ id: '2', title: 'Task 2', description: 'Description 2' }],
-  Done: [{ id: '3', title: 'Task 3', description: 'Description 3' }],
-};
+import LoadingSpinner from './LoadingSpinner';
 
 const TaskBoard = () => {
-  const [tasks, setTasks] = useState(initialTasks);
+  const queryClient = useQueryClient();
+
+  // Fetch tasks from the backend
+  const { data: tasks = [], isLoading } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: fetchTasks,
+  });
+
+  // Mutation for updating task order
+  const updateTaskMutation = useMutation({
+    mutationFn: updateTask,
+    onSuccess: () => queryClient.invalidateQueries(['tasks']),
+  });
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
 
     const { source, destination } = result;
-    const sourceColumn = tasks[source.droppableId];
-    const destColumn = tasks[destination.droppableId];
 
-    const newSourceTasks = [...sourceColumn];
-    const [movedTask] = newSourceTasks.splice(source.index, 1);
+    const movedTask = tasks.find((task) => task._id === result.draggableId);
+    if (!movedTask) return;
 
-    const newDestTasks = [...destColumn];
-    newDestTasks.splice(destination.index, 0, movedTask);
+    const updatedTask = { ...movedTask, category: destination.droppableId };
 
-    setTasks({
-      ...tasks,
-      [source.droppableId]: newSourceTasks,
-      [destination.droppableId]: newDestTasks,
+    updateTaskMutation.mutate({
+      taskId: movedTask._id,
+      updatedData: updatedTask,
     });
   };
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="grid grid-cols-3 gap-4 p-4">
-        {Object.keys(tasks).map((category) => (
+        {['To-Do', 'In Progress', 'Done'].map((category) => (
           <div
             key={category}
             className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
@@ -47,22 +53,24 @@ const TaskBoard = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className="mt-4">
-                  {tasks[category].map((task, index) => (
-                    <Draggable
-                      key={task.id}
-                      draggableId={task.id}
-                      index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="mb-2">
-                          <TaskCard task={task} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  {tasks
+                    .filter((task) => task.category === category)
+                    .map((task, index) => (
+                      <Draggable
+                        key={task._id}
+                        draggableId={task._id}
+                        index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="mb-2">
+                            <TaskCard task={task} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
                   {provided.placeholder}
                 </div>
               )}
