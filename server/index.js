@@ -33,10 +33,14 @@ app.get('/tasks', async (req, res) => {
 });
 
 app.put('/tasks/:id', async (req, res) => {
-  const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  res.json(updatedTask);
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating task', error });
+  }
 });
 
 app.delete('/tasks/:id', async (req, res) => {
