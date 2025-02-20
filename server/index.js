@@ -40,8 +40,12 @@ app.put('/tasks/:id', async (req, res) => {
 });
 
 app.delete('/tasks/:id', async (req, res) => {
-  await Task.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Task deleted' });
+  try {
+    await Task.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting task', error });
+  }
 });
 
 // Default route
