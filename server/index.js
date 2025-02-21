@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import taskRoutes from './routes/taskRoutes.js';
+import activityRoutes from './routes/activityRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,9 @@ mongoose.connect(process.env.MONGO_URI);
 
 // Use taskRoutes for /tasks endpoints
 app.use('/tasks', taskRoutes);
+
+// activity Routes
+app.use('/activities', activityRoutes);
 
 // Default route
 app.get('/', (req, res) => {
