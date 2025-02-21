@@ -1,3 +1,4 @@
+import ActivityLog from '@/components/ActivityLog';
 import TaskBoard from '@/components/TaskBoard';
 
 const Dashboard = () => {
@@ -6,7 +7,15 @@ const Dashboard = () => {
       <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
         Oneplan Task Manager
       </h1>
-      <TaskBoard />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+        <div className="col-span-2">
+          <TaskBoard />
+        </div>
+        <div className="col-span-1">
+          <ActivityLog />
+        </div>
+      </div>
     </div>
   );
 };

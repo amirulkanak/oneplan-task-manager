@@ -11,3 +11,7 @@
 body {
   @apply font-outfit;
 }
+
+.test-border {
+  @apply border border-red-400;
+}

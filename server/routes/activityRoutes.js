@@ -3,7 +3,7 @@ import Activity from '../models/activityModel.js';
 
 const router = express.Router();
 
-// Get all activities for a user
+// Get all activities/ for a user
 router.get('/:userId', async (req, res) => {
   try {
     const activities = await Activity.find({ userId: req.params.userId }).sort({
@@ -15,7 +15,7 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-// Add a new activity
+// Add a new activities/
 router.post('/', async (req, res) => {
   try {
     const newActivity = new Activity(req.body);
