@@ -6,9 +6,9 @@ const router = express.Router();
 // POST /tasks
 router.post('/', async (req, res) => {
   try {
-    const task = new Task(req.body);
-    await task.save();
-    res.json(task);
+    const newTask = new Task({ ...req.body });
+    const savedTask = await newTask.save();
+    res.status(201).json(savedTask);
   } catch (error) {
     res.status(500).json({ message: 'Error creating task', error });
   }
