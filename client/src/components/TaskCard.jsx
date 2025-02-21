@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateTask, deleteTask } from '@/api/taskService';
+import dayjs from 'dayjs';
 
 const TaskCard = ({ task }) => {
   const queryClient = useQueryClient();
-
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(task.title);
   const [editedDescription, setEditedDescription] = useState(task.description);
+  const [editedDueDate, setEditedDueDate] = useState(task.dueDate);
 
   const updateTaskMutation = useMutation({
     mutationFn: updateTask,
@@ -22,7 +23,11 @@ const TaskCard = ({ task }) => {
   const handleSave = () => {
     updateTaskMutation.mutate({
       taskId: task._id,
-      updatedData: { title: editedTitle, description: editedDescription },
+      updatedData: {
+        title: editedTitle,
+        description: editedDescription,
+        dueDate: editedDueDate,
+      },
     });
     setIsEditing(false);
   };
@@ -33,8 +38,14 @@ const TaskCard = ({ task }) => {
     }
   };
 
+  const isOverdue =
+    task.dueDate && dayjs(task.dueDate).isBefore(dayjs(), 'day');
+
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+    <div
+      className={`p-4 rounded-lg shadow-md border ${
+        isOverdue ? 'border-red-500' : 'border-gray-300'
+      } bg-white dark:bg-gray-800`}>
       {isEditing ? (
         <>
           <input
@@ -46,6 +57,12 @@ const TaskCard = ({ task }) => {
           <textarea
             value={editedDescription}
             onChange={(e) => setEditedDescription(e.target.value)}
+            className="w-full p-2 mb-2 border rounded dark:bg-gray-700 dark:text-white"
+          />
+          <input
+            type="date"
+            value={editedDueDate}
+            onChange={(e) => setEditedDueDate(e.target.value)}
             className="w-full p-2 mb-2 border rounded dark:bg-gray-700 dark:text-white"
           />
           <button
@@ -67,6 +84,14 @@ const TaskCard = ({ task }) => {
           {task.description && (
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               {task.description}
+            </p>
+          )}
+          {task.dueDate && (
+            <p
+              className={`text-sm ${
+                isOverdue ? 'text-red-500' : 'text-gray-500'
+              }`}>
+              Due: {dayjs(task.dueDate).format('MMM D, YYYY')}
             </p>
           )}
           <div className="flex justify-between mt-2">

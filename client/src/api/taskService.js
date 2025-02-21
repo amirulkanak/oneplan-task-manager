@@ -9,14 +9,16 @@ export const fetchTasks = async () => {
   return response.data;
 };
 
+export const createTask = async (taskData) => {
+  await axios.post(API_URL, taskData);
+};
+
 export const addTask = async (task) => {
   const response = await axios.post(API_URL, task);
   return response.data;
 };
 
 export const updateTask = async ({ taskId, updatedData }) => {
-  console.log('taskId', taskId);
-  console.log('updatedData', updatedData);
   await axios.put(`${API_URL}/${taskId}`, updatedData);
 };
 
