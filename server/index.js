@@ -8,7 +8,11 @@ const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// allowed urls
+const allowedOrigins = process.env.FRONTEND_URLS.split(',');
+
 // Middleware
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));

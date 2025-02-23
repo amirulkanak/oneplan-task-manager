@@ -18,7 +18,7 @@ function Dashboard() {
   const [editingTask, setEditingTask] = useState(null);
 
   // Axios base URL
-  axios.defaults.baseURL = 'http://localhost:5000';
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
   // Fetch tasks
   const { data: tasks = [] } = useQuery({
