@@ -1,31 +1,36 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import taskRoutes from './routes/taskRoutes.js';
-import activityRoutes from './routes/activityRoutes.js';
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const admin = require('firebase-admin');
+require('dotenv').config();
+const morgan = require('morgan');
 
-dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 5000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
 
-mongoose.connect(process.env.MONGO_URI);
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error(err));
 
-// Use taskRoutes for /tasks endpoints
-app.use('/tasks', taskRoutes);
+// Firebase Admin Initialization
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
-// activity Routes
-app.use('/activities', activityRoutes);
+// Routes
+const tasksRouter = require('./routes/tasks');
+app.use('/tasks', tasksRouter);
 
-// Default route
 app.get('/', (req, res) => {
-  res.send('Welcome to the API - developed by github/amirulkanak');
+  res.send('Oneplan Backend Running');
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is online, address: http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

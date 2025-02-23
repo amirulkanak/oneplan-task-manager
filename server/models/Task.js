@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const TaskSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
   title: { type: String, required: true, maxlength: 50 },
   description: { type: String, maxlength: 200 },
   category: {
@@ -10,8 +11,7 @@ const TaskSchema = new mongoose.Schema({
   },
   timestamp: { type: Date, default: Date.now },
   dueDate: { type: Date },
+  order: { type: Number }, // For drag-and-drop ordering
 });
 
-const Task = mongoose.model('Task', TaskSchema);
-
-export default Task;
+module.exports = mongoose.model('Task', taskSchema);

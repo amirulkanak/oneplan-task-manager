@@ -1,20 +1,23 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import '@/styles/globalStyles.css';
-import { RouterProvider } from 'react-router-dom';
-import routes from './routes/Routes';
-import UserAuthContextProvider from '@/context/UserAuthContext';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import App from './App';
+import './index.css';
+import ThemeProvider from './context/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 
-// tanstack query client
 const queryClient = new QueryClient();
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <UserAuthContextProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={routes} />
-      </QueryClientProvider>
-    </UserAuthContextProvider>
-  </StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <ThemeProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <App />
+          <Toaster position="top-center" reverseOrder={false} />
+        </QueryClientProvider>
+      </BrowserRouter>
+    </ThemeProvider>
+  </React.StrictMode>
 );
