@@ -19,7 +19,9 @@ function Login() {
       <div className="min-h-screen flex">
         <div className="flex-1 flex items-center justify-center p-4 bg-primary/5">
           <div className="bg-white p-10 rounded-lg shadow-lg text-center">
-            <h1 className="text-3xl font-bold mb-4">Welcome to OnePlan</h1>
+            <h1 className="text-3xl font-bold dark:text-primary mb-4">
+              Welcome to OnePlan
+            </h1>
             <p className="mb-8 text-gray-600">
               Your ultimate task management solution
             </p>

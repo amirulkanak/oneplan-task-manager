@@ -9,6 +9,7 @@ import TaskColumn from './TaskColumn';
 import TaskForm from './TaskForm';
 import { Moon, Sun } from 'lucide-react';
 import useTheme from '@/hooks/useTheme';
+import toast from 'react-hot-toast';
 
 function Dashboard() {
   const [user] = useAuthState(auth);
@@ -119,9 +120,29 @@ function Dashboard() {
   const handleEditTask = (task) => setEditingTask(task);
 
   const handleDeleteTask = (taskId) => {
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      deleteTaskMutation.mutate(taskId);
-    }
+    toast(
+      (t) => (
+        <div className="p-4">
+          <p>Are you sure you want to delete this task?</p>
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={() => {
+                deleteTaskMutation.mutate(taskId);
+                toast.dismiss(t.id);
+              }}
+              className="bg-red-600 text-white px-2 py-1 rounded">
+              Confirm
+            </button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="bg-gray-300 text-black px-2 py-1 rounded">
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity }
+    );
   };
 
   const categories = ['To-Do', 'In Progress', 'Done'];
@@ -137,17 +158,17 @@ function Dashboard() {
             <strong>{user.displayName}&#39;s Dashboard</strong>!
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 md:gap-3">
           <button
             onClick={() => {
               toggleTheme();
             }}
             className="p-2 rounded-full hover:bg-sky-600/30">
-            {theme === 'light' ? <Sun size={28} /> : <Moon size={28} />}
+            {theme === 'light' ? <Sun size={20} /> : <Moon size={20} />}
           </button>
           <button
             onClick={() => auth.signOut()}
-            className="bg-secondary text-white px-4 py-2 rounded">
+            className="bg-secondary text-white text-xs md:text-base px-4 py-2 rounded">
             Sign Out
           </button>
         </div>
