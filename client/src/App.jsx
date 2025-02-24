@@ -3,11 +3,12 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './firebase';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import LoadingLogo from './components/LoadingLogo';
 
 function App() {
   const [user, loading] = useAuthState(auth);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingLogo />;
 
   return (
     <Routes>
