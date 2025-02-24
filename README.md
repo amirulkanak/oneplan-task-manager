@@ -8,7 +8,6 @@ onePlan is a web application that allows users to create and manage their own pe
 - Node.js
 - Express
 - MongoDB
-- Mongoose
 - Tailwind CSS
 - Axios
 - Firebase
@@ -24,6 +23,21 @@ onePlan is a web application that allows users to create and manage their own pe
 - Task priority management
 - Drag and drop tasks for reordering
 - Real-time updates
+
+## Dependencies
+- dnd-core
+- tailwindcss
+- axios
+- firebase
+- firebase-admin
+- react-firebase-hooks
+- react-query
+- react-router-dom
+- react-hot-toast
+- cors
+- dotenv
+- express
+- mongoose
 
 ## Installation
 1. Clone the repository
