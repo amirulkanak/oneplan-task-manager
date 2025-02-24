@@ -1,27 +1,43 @@
 const express = require('express');
-const cors = require('cors');
 const mongoose = require('mongoose');
 const admin = require('firebase-admin');
 require('dotenv').config();
 const morgan = require('morgan');
+const tasksRouter = require('./routes/tasks');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// allowed urls
+// Define allowed origins
+// const allowedOrigins = [
+//   'http://localhost:5173',
+//   'https://oneplan-amirulkanak.web.app',
+// ];
+
 const allowedOrigins = process.env.FRONTEND_URLS.split(',');
 
+// Enable CORS for allowed origins
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
 // Middleware
-app.use(cors({ origin: allowedOrigins, credentials: true }));
-app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
 // MongoDB Connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error(err));
+mongoose.connect(process.env.MONGO_URI).catch((err) => console.error(err));
 
 // Firebase Admin Initialization
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
@@ -30,7 +46,6 @@ admin.initializeApp({
 });
 
 // Routes
-const tasksRouter = require('./routes/tasks');
 app.use('/tasks', tasksRouter);
 
 app.get('/', (req, res) => {
